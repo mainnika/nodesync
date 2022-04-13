@@ -16,6 +16,9 @@ type NodeSync struct {
 // Inside private environment keep everything open
 var defaultAcl = zk.WorldACL(zk.PermAll)
 
+// The length of a postfix sequence, see http://zookeeper.apache.org/doc/current/zookeeperProgrammers.html#Sequence+Nodes+--+Unique+Naming
+var sequenceLen = 10
+
 // New creates a new nodesync instance
 func New(zkconn *zk.Conn, rootPath string) (nodeSync *NodeSync, err error) {
 
