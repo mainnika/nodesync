@@ -161,3 +161,19 @@ func (s *NodeSync) WaitEmpty(where string) (err error) {
 
 	return
 }
+
+// WaitChanged waits for any changes a zookeeper node and returns a new children list after the change.
+// Note: the children list is always stable sorted.
+func (s *NodeSync) WaitChanged(where string) (children []string, ev <-chan zk.Event, err error) {
+
+	workingPath := path.Join(s.rootPath, where)
+
+	children, _, ev, err = s.Zk.ChildrenW(workingPath)
+	if err != nil {
+		return
+	}
+
+	children = sortChildren(children)
+
+	return
+}
