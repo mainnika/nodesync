@@ -137,3 +137,27 @@ func (s *NodeSync) Unlock(where string, iam string) (err error) {
 
 	return
 }
+
+// WaitEmpty implements a barrier synchronisation mechanism by waiting for empty node.
+func (s *NodeSync) WaitEmpty(where string) (err error) {
+
+	workingPath := path.Join(s.rootPath, where)
+
+	for {
+		var children []string
+		var ev <-chan zk.Event
+
+		children, _, ev, err = s.Zk.ChildrenW(workingPath)
+		if err != nil {
+			return
+		}
+
+		if len(children) == 0 {
+			break
+		}
+
+		<-ev
+	}
+
+	return
+}
